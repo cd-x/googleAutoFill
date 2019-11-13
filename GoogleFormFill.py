@@ -3,12 +3,12 @@ from selenium.webdriver.support import ui
 from selenium.webdriver.common.keys import Keys
 import time
 import json
+from scrapEntryID import Scrap
 
-
-class formfiller:
+class Formfiller:
     def __init__(self):
         self.name = ''
-        self.bio = ''
+        self.address = ''
         self.clg_nm = ''
         self.gender = ''
         self.ten_mar = ''
@@ -20,7 +20,7 @@ class formfiller:
         self.contact = ''
         
         self.nameb = ''
-        self.biob = ''
+        self.addressb = ''
         self.clg_nmb = ''
         self.genderb = ''
         self.ten_marb = ''
@@ -33,7 +33,7 @@ class formfiller:
         
     def read(self):
         self.name = input("Enter your name")
-        self.bio = input("write your bio")
+        self.address = input("write your Address")
         self.clg_nm = input("Enter your institution name")
         self.gender = input(" gender ")
         self.ten_mar = input("class 10th marks ")
@@ -47,7 +47,7 @@ class formfiller:
     def storeuserdat(self):
         userdat = {}
         userdat = {'name':self.name,
-                   'bio' : self.bio,
+                   'address' : self.address,
                    'clg' : self.clg_nm,
                    'gender' : self.gender,
                    'ten_mar':self.ten_mar,
@@ -59,7 +59,7 @@ class formfiller:
                    'contact':self.contact
                    }
         
-        with open('user_details.json','w') as user:
+        with open('user_details.json','w+') as user:
             json.dump(userdat, user)
             
             
@@ -71,7 +71,7 @@ class formfiller:
             dat = dict(user_di)
             
             self.nameb = dat['name']
-            self.biob = dat['bio']
+            self.addressb = dat['address']
             self.clg_nmb = dat['clg']
             self.genderb = dat['gender']
             self.ten_marb = dat['ten_mar']
@@ -83,52 +83,56 @@ class formfiller:
             self.contactb = dat['contact']
         
     def formfill(self):
-        driver = webdriver.Firefox()
-        driver.get("https://forms.gle/Y8HhaedsevFm9fww5")
+
+        link = input('Enter form link here  ==>>')
+        s=Scrap(link)
+        entries = s.entryID()
+        driver = webdriver.Firefox(r"C:\\Users\\rishi kumar\\Desktop\\sem3\\py & r\\1")
+        driver.get(link)
         time.sleep(1)
-        username = driver.find_element_by_name("entry.1996697983")
+        username = driver.find_element_by_name("entry."+entries['"Name"'])
         username.send_keys(self.nameb)
         time.sleep(1)
-        details = driver.find_element_by_name("entry.707845717")
-        details.send_keys(self.biob)
+        details = driver.find_element_by_name("entry."+entries['"Address"'])
+        details.send_keys(self.addressb)
         
-        details = driver.find_element_by_name("entry.829210520")
+        details = driver.find_element_by_name("entry."+entries['"Collegename"'])
         details.send_keys(self.clg_nmb)
         time.sleep(1)
 
-        details = driver.find_element_by_name("entry.74146425")
+        details = driver.find_element_by_name("entry."+entries['"Class10thmarks"'])
         details.send_keys(self.ten_marb)
         time.sleep(1)
         
-        details = driver.find_element_by_name("entry.2118542200")
+        details = driver.find_element_by_name("entry."+entries['"Class12thmarks"'])
         details.send_keys(self.twel_marb)
         time.sleep(1)
         
-        details = driver.find_element_by_name("entry.1444093316")
+        details = driver.find_element_by_name("entry."+entries['"UGMarks"'])
         details.send_keys(self.grad_marb)
         time.sleep(2)
         
-        details = driver.find_element_by_name("entry.1025140441")
+        details = driver.find_element_by_name("entry."+entries['"PGMarks"'])
         details.send_keys(self.pg_marb)
         time.sleep(1)
         
-        details = driver.find_element_by_name("entry.724021953")
+        details = driver.find_element_by_name("entry."+entries['"DateofBirth"'])
         details.send_keys(self.dobb)
         time.sleep(2)
         
-        details = driver.find_element_by_name("entry.564675553")
+        details = driver.find_element_by_name("entry."+entries['"Email"'])
         details.send_keys(self.emailb)
         time.sleep(1)
         
-        details = driver.find_element_by_name("entry.1941165616")
+        details = driver.find_element_by_name("entry."+entries['"Phonenumber"'])
         details.send_keys(self.contactb)
-        time.sleep(1 )
+        time.sleep(1)
         
-        login = driver.find_element_by_tag_name("span")
-        login.click()
+        submit = driver.find_element_by_tag_name('span')
+        submit.click()
         
         
-u1 = formfiller()
+u1 = Formfiller()
 u1.dataloader()
 u1.formfill()
         
